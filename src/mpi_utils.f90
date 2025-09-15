@@ -1,13 +1,35 @@
 module mpi_utils
+    use iso_fortran_env, only : real64
     implicit none
     private
 
     public :: distribute_elements_from_np, &
               distribute_elements_from_indices, &
               distribute_elements_start_stop, &
-              mpi_displacements
+              mpi_displacements, &
+              swap_ptr, &
+              left_neighbour, &
+              right_neighbour
 
 contains
+
+  subroutine swap_ptr(x, y)
+    real(real64), pointer, intent(inout) :: x(:,:), y(:,:)
+    real(real64), pointer :: t(:,:)
+    t => x
+    x => y
+    y => t
+  end subroutine swap_ptr
+
+  pure integer function left_neighbour(r, p_) result(res)
+    integer, intent(in) :: r, p_
+    res = modulo(r-1+p_, p_)
+  end function left_neighbour
+
+  pure integer function right_neighbour(r, p_) result(res)
+    integer, intent(in) :: r, p_
+    res = modulo(r+1, p_)
+  end function right_neighbour
 
   !> @brief Compute the displacements required for (all)gather(v) and (all)scatter(v).
   subroutine mpi_displacements(recvcounts, displs)

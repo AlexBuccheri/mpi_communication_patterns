@@ -41,4 +41,13 @@ target_link_libraries(summa PRIVATE
    BLAS::BLAS 
    LAPACK::LAPACK
    common_flags)
+
+add_executable(summa_overlapping)
+target_compile_options(summa_overlapping PRIVATE)
+target_link_libraries(summa_overlapping PRIVATE 
+   MPI::MPI_Fortran 
+   BLAS::BLAS 
+   LAPACK::LAPACK
+   common_flags)
+
 add_subdirectory(src)
